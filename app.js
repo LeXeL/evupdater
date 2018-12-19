@@ -5,6 +5,7 @@ const axios = require('axios');
 var rimraf = require('rimraf');
 var cheerio = require('cheerio');
 var app     = express();
+const wowLocation = "C:/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns"
 
 function getRemoteVersion(url){
     var re = /Version: \d+.\d+/;
@@ -65,27 +66,27 @@ async function downloadFile(url,name,addonVersion){
 function deleteAndExtractZipToLocation(name){
     let split_name = name.split('-')[0]
     if (split_name === 'AddonSkins'){
-        rimraf('C:/Program Files (x86)/World of Warcraft/Interface/AddOns/AddOnSkins', (err) => {
+        rimraf(wowLocation + '/AddOnSkins', (err) => {
             if (err) console.log(err);
             console.log(`Extracting file: ${name}`)
-            fs.createReadStream(name).pipe(unzip.Extract({ path: 'C:/Program Files (x86)/World of Warcraft/Interface/AddOns' }));
+            fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
     }
     else if (split_name === 'elvui'){
-        rimraf('C:/Program Files (x86)/World of Warcraft/Interface/AddOns/ElvUI', (err) => {
+        rimraf(wowLocation + '/ElvUI', (err) => {
             if (err) console.log(err);
         });
-        rimraf('C:/Program Files (x86)/World of Warcraft/Interface/AddOns/ElvUI_Config', (err) => {
+        rimraf(wowLocation + '/ElvUI_Config', (err) => {
             if (err) console.log(err);
             console.log(`Extracting file: ${name}`)
-            fs.createReadStream(name).pipe(unzip.Extract({ path: 'C:/Program Files (x86)/World of Warcraft/Interface/AddOns' }));
+            fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
     }
     else if (split_name === 'SEL'){
-        rimraf('C:/Program Files (x86)/World of Warcraft/Interface/AddOns/ElvUI_SLE', (err) => {
+        rimraf(wowLocation + '/ElvUI_SLE', (err) => {
             if (err) console.log(err);
             console.log(`Extracting file: ${name}`)
-            fs.createReadStream(name).pipe(unzip.Extract({ path: 'C:/Program Files (x86)/World of Warcraft/Interface/AddOns' }));
+            fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
     }
     
