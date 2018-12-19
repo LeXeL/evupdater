@@ -67,7 +67,7 @@ async function downloadFile(url,name,gitUrl){
 function deleteFile(name){
     console.log(name)
     fs.unlink(name, (err) => {
-        if (err) throw err;
+        if (err) console.log(`Error in deleting ${err}`)
         console.log(`[!] file: ${name} was deleted` );
     });
 }
@@ -75,7 +75,7 @@ function extractZipFile(name){
     let split_name = name.split('-')[0]
     if (split_name === 'AddonSkins'){
         rimraf(wowLocation + '/AddOnSkins', (err) => {
-            if (err) console.log(err);
+            if (err) console.log(`Error in extracting ${err}`)
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
@@ -83,10 +83,10 @@ function extractZipFile(name){
     }
     else if (split_name === 'elvui'){
         rimraf(wowLocation + '/ElvUI', (err) => {
-            if (err) console.log(err);
+            if (err) console.log(`Error in extracting ${err}`)            
         });
         rimraf(wowLocation + '/ElvUI_Config', (err) => {
-            if (err) console.log(err);
+            if (err) console.log(`Error in extracting ${err}`)            
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
@@ -94,7 +94,7 @@ function extractZipFile(name){
     }
     else if (split_name === 'SEL'){
         rimraf(wowLocation + '/ElvUI_SLE', (err) => {
-            if (err) console.log(err);
+            if (err) console.log(`Error in extracting ${err}`)            
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
