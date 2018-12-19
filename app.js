@@ -4,6 +4,7 @@ var rimraf = require('rimraf')
 var cheerio = require('cheerio')
 const axios = require('axios')
 const wowLocation = "C:/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns"
+const versionFileName = 'version.json'
 
 function getRemoteVersion(url){
     var re = /Version: \d+.\d+/;
@@ -19,25 +20,40 @@ function getRemoteVersion(url){
         })
     })
 }
+function getLocalVersion(){
+    let rawdata = fs.readFileSync(versionFileName)
+    return JSON.parse(rawdata) 
+}
+
+function updateLocalVersion(newcontent){
+    let data = JSON.stringify(newcontent);  
+    fs.writeFileSync(versionFileName, data);  
+}
 
 async function downloadFile(url,name,gitUrl){
+    let localVersions = await getLocalVersion()
     if (name === 'elvui'){
-        let version = await getRemoteVersion(gitUrl)
-        axios({
-            url: url+name+'-'+version+'.zip',
-            method: 'GET',
-            responseType: 'arraybuffer' 
-        })
-        .then((response) => {
-            fs.writeFileSync(name+'-'+version+'.zip', response.data)
-            const stats = fs.statSync(name+'-'+version+'.zip')
-            if (stats.size == response.headers['content-length']){
-                extractZipFile(name+'-'+version+'.zip')
-            }
-        })
-        .catch(function (error) {
-            console.log(`error in download: ${error}`);
-        })
+        let remoteVersion = await getRemoteVersion(gitUrl)
+        if(localVersions['elvui'] == 0 || localVersions < remoteVersion){
+            let version = remoteVersion
+            axios({
+                url: url+name+'-'+version+'.zip',
+                method: 'GET',
+                responseType: 'arraybuffer' 
+            })
+            .then((response) => {
+                fs.writeFileSync(name+'-'+version+'.zip', response.data)
+                const stats = fs.statSync(name+'-'+version+'.zip')
+                if (stats.size == response.headers['content-length']){
+                    extractZipFile(name+'-'+version+'.zip')
+                    updateLocalVersion(localVersions['elvui']=version)
+                }
+            })
+            .catch(function (error) {
+                console.log(`error in download: ${error}`);
+            })
+        }
+        
     }
     else{
         let version = await getRemoteVersion(gitUrl)
