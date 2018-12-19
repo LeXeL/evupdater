@@ -1,10 +1,8 @@
-var express = require('express');
-var fs = require('fs');
-var unzip = require('unzip');
-const axios = require('axios');
-var rimraf = require('rimraf');
-var cheerio = require('cheerio');
-var app     = express();
+var fs = require('fs')
+var unzip = require('unzip')
+var rimraf = require('rimraf')
+var cheerio = require('cheerio')
+const axios = require('axios')
 const wowLocation = "C:/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns"
 
 function getRemoteVersion(url){
@@ -21,9 +19,7 @@ function getRemoteVersion(url){
         })
     })
 }
-function getLocalVersion(){
 
-}
 async function downloadFile(url,name,gitUrl){
     if (name === 'elvui'){
         let version = await getRemoteVersion(gitUrl)
@@ -65,7 +61,6 @@ async function downloadFile(url,name,gitUrl){
 }
 
 function deleteFile(name){
-    console.log(name)
     fs.unlink(name, (err) => {
         if (err) console.log(`Error in deleting ${err}`)
         console.log(`[!] file: ${name} was deleted` );
