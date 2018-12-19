@@ -73,8 +73,8 @@ function extractZipFile(name){
             if (err) console.log(`Error in extracting ${err}`)
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
+            deleteFile(name)
         });
-        deleteFile(name)
     }
     else if (split_name === 'elvui'){
         rimraf(wowLocation + '/ElvUI', (err) => {
@@ -84,16 +84,16 @@ function extractZipFile(name){
             if (err) console.log(`Error in extracting ${err}`)            
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
+            deleteFile(name)
         });
-        deleteFile(name)
     }
     else if (split_name === 'SEL'){
         rimraf(wowLocation + '/ElvUI_SLE', (err) => {
             if (err) console.log(`Error in extracting ${err}`)            
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
+            deleteFile(name)
         });
-        deleteFile(name)
     }
     
 
