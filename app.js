@@ -65,6 +65,7 @@ async function downloadFile(url,name,addonVersion){
 }
 
 function deleteFile(name){
+    console.log(name)
     fs.unlink(name, (err) => {
         if (err) throw err;
         console.log(`[!] file: ${name} was deleted` );
