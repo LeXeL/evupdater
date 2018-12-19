@@ -20,9 +20,10 @@ function getRemoteVersion(url){
             reject(error)
         })
     })
-    
 }
+function getLocalVersion(){
 
+}
 async function downloadFile(url,name,addonVersion){
     if (name === 'elvui'){
         let version = await getRemoteVersion(addonVersion)
@@ -35,7 +36,7 @@ async function downloadFile(url,name,addonVersion){
             fs.writeFileSync(name+'-'+version+'.zip', response.data)
             const stats = fs.statSync(name+'-'+version+'.zip')
             if (stats.size == response.headers['content-length']){
-                deleteAndExtractZipToLocation(name+'-'+version+'.zip')
+                extractZipFile(name+'-'+version+'.zip')
             }
         })
         .catch(function (error) {
@@ -53,7 +54,7 @@ async function downloadFile(url,name,addonVersion){
             fs.writeFileSync(name+'-'+version+'.zip', response.data)
             const stats = fs.statSync(name+'-'+version+'.zip')
             if (stats.size == response.headers['content-length']){
-                deleteAndExtractZipToLocation(name+'-'+version+'.zip')
+                extractZipFile(name+'-'+version+'.zip')
             }
         })
         .catch(function (error) {
@@ -63,7 +64,13 @@ async function downloadFile(url,name,addonVersion){
     
 }
 
-function deleteAndExtractZipToLocation(name){
+function deleteFile(name){
+    fs.unlink(name, (err) => {
+        if (err) throw err;
+        console.log(`[!] file: ${name} was deleted` );
+    });
+}
+function extractZipFile(name){
     let split_name = name.split('-')[0]
     if (split_name === 'AddonSkins'){
         rimraf(wowLocation + '/AddOnSkins', (err) => {
@@ -71,6 +78,7 @@ function deleteAndExtractZipToLocation(name){
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
+        deleteFile(name)
     }
     else if (split_name === 'elvui'){
         rimraf(wowLocation + '/ElvUI', (err) => {
@@ -81,6 +89,7 @@ function deleteAndExtractZipToLocation(name){
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
+        deleteFile(name)
     }
     else if (split_name === 'SEL'){
         rimraf(wowLocation + '/ElvUI_SLE', (err) => {
@@ -88,6 +97,7 @@ function deleteAndExtractZipToLocation(name){
             console.log(`Extracting file: ${name}`)
             fs.createReadStream(name).pipe(unzip.Extract({ path: wowLocation }));
         });
+        deleteFile(name)
     }
     
 
