@@ -24,9 +24,9 @@ function getRemoteVersion(url){
 function getLocalVersion(){
 
 }
-async function downloadFile(url,name,addonVersion){
+async function downloadFile(url,name,gitUrl){
     if (name === 'elvui'){
-        let version = await getRemoteVersion(addonVersion)
+        let version = await getRemoteVersion(gitUrl)
         axios({
             url: url+name+'-'+version+'.zip',
             method: 'GET',
@@ -40,11 +40,11 @@ async function downloadFile(url,name,addonVersion){
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(`error in download: ${error}`);
         })
     }
     else{
-        let version = await getRemoteVersion(addonVersion)
+        let version = await getRemoteVersion(gitUrl)
         axios({
             url: url,
             method: 'GET',
@@ -58,7 +58,7 @@ async function downloadFile(url,name,addonVersion){
             }
         })
         .catch(function (error) {
-            console.log(error);
+            console.log(`error in download: ${error}`);
         })
     }
     
