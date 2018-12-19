@@ -46,7 +46,8 @@ async function downloadFile(url,name,gitUrl){
                 const stats = fs.statSync(name+'-'+version+'.zip')
                 if (stats.size == response.headers['content-length']){
                     extractZipFile(name+'-'+version+'.zip')
-                    updateLocalVersion(localVersions['elvui']=version)
+                    localVersions['elvui']=version
+                    updateLocalVersion(localVersions)
                 }
             })
             .catch(function (error) {
