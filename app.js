@@ -34,7 +34,7 @@ async function downloadFile(url,name,gitUrl){
     let localVersions = await getLocalVersion()
     if (name === 'elvui'){
         let remoteVersion = await getRemoteVersion(gitUrl)
-        if(localVersions['elvui'] == 0 || localVersions < remoteVersion){
+        if(localVersions[name] == 0 || localVersions < remoteVersion){
             let version = remoteVersion
             axios({
                 url: url+name+'-'+version+'.zip',
@@ -46,7 +46,7 @@ async function downloadFile(url,name,gitUrl){
                 const stats = fs.statSync(name+'-'+version+'.zip')
                 if (stats.size == response.headers['content-length']){
                     extractZipFile(name+'-'+version+'.zip')
-                    localVersions['elvui']=version
+                    localVersions[name]=version
                     updateLocalVersion(localVersions)
                 }
             })
@@ -58,21 +58,26 @@ async function downloadFile(url,name,gitUrl){
     }
     else{
         let version = await getRemoteVersion(gitUrl)
-        axios({
-            url: url,
-            method: 'GET',
-            responseType: 'arraybuffer' 
-        })
-        .then((response) => {
-            fs.writeFileSync(name+'-'+version+'.zip', response.data)
-            const stats = fs.statSync(name+'-'+version+'.zip')
-            if (stats.size == response.headers['content-length']){
-                extractZipFile(name+'-'+version+'.zip')
-            }
-        })
-        .catch(function (error) {
-            console.log(`error in download: ${error}`);
-        })
+        if(localVersions[name] == 0 || localVersions < remoteVersion){
+            axios({
+                url: url,
+                method: 'GET',
+                responseType: 'arraybuffer' 
+            })
+            .then((response) => {
+                fs.writeFileSync(name+'-'+version+'.zip', response.data)
+                const stats = fs.statSync(name+'-'+version+'.zip')
+                if (stats.size == response.headers['content-length']){
+                    extractZipFile(name+'-'+version+'.zip')
+                    localVersions[name]=version
+                    updateLocalVersion(localVersions)
+                }
+            })
+            .catch(function (error) {
+                console.log(`error in download: ${error}`);
+            })
+        }
+        
     }
     
 }
