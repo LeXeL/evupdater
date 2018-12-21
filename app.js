@@ -6,13 +6,14 @@ const axios = require('axios')
 const wowLocation = "C:/Program Files (x86)/World of Warcraft/_retail_/Interface/AddOns"
 const versionFileName = 'version.json'
 
-function getRemoteVersion(url){
+function getRemoteVersion(url,name){
     var re = /Version: \d+.\d+/;
     return new Promise((resolve, reject)=>{
         axios.get(url)
         .then((res)=>{
             var $ = cheerio.load(res.data);
             let version = $.text().match(re)
+            console.log(`Remote Version for: ${name} is ${version[0].split(' ')[1]}`)
             resolve(version[0].split(' ')[1])
         })
         .catch(function (error) {
@@ -33,8 +34,8 @@ function updateLocalVersion(newcontent){
 async function downloadFile(url,name,gitUrl){
     let localVersions = await getLocalVersion()
     if (name === 'elvui'){
-        let remoteVersion = await getRemoteVersion(gitUrl)
-        if(localVersions[name] == 0 || localVersions < remoteVersion){
+        let remoteVersion = await getRemoteVersion(gitUrl,name)
+        if(localVersions[name] == 0 || parseFloat(localVersions[name]) < remoteVersion){
             let version = remoteVersion
             axios({
                 url: url+name+'-'+version+'.zip',
@@ -57,8 +58,11 @@ async function downloadFile(url,name,gitUrl){
         
     }
     else{
-        let version = await getRemoteVersion(gitUrl)
-        if(localVersions[name] == 0 || localVersions < remoteVersion){
+        let remoteVersion = await getRemoteVersion(gitUrl)
+        // console.log(`${localVersions} and ${remoteVersion} and ${name}`)
+        if(localVersions[name] == 0 || parseFloat(localVersions[name]) < remoteVersion){
+            console.log(`Detecting new version for: ${name} attempting to download!`)
+            let version = remoteVersion
             axios({
                 url: url,
                 method: 'GET',
